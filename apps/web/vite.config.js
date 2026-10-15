@@ -1,6 +1,6 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
-import { createLogger, defineConfig } from 'vite';
+import { createLogger, defineConfig, loadEnv } from 'vite';
 import inlineEditPlugin from './plugins/visual-editor/vite-plugin-react-inline-editor.js';
 import editModeDevPlugin from './plugins/visual-editor/vite-plugin-edit-mode.js';
 import iframeRouteRestorationPlugin from './plugins/vite-plugin-iframe-route-restoration.js';
@@ -13,6 +13,46 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'));
 const allDeps = Object.keys(pkg.dependencies || {});
 
 const isDev = process.env.NODE_ENV !== 'production';
+
+// ── Supabase settings for the browser ─────────────────────────────────────────
+// Read from the hosting platform's environment variables or apps/web/.env.
+// Accepts VITE_SUPABASE_URL / SUPABASE_URL and a PUBLISHABLE (anon) key under
+// VITE_SUPABASE_PUBLISHABLE_KEY, SUPABASE_PUBLISHABLE_KEY, VITE_SUPABASE_ANON_KEY or SUPABASE_ANON_KEY.
+// SUPABASE_API_KEY / SUPABASE_SECRET_KEY are deliberately NOT read here: they are server-only.
+const fileEnv = loadEnv(isDev ? 'development' : 'production', process.cwd(), '');
+const envValue = (...names) => {
+	for (const n of names) {
+		const v = process.env[n] || fileEnv[n];
+		if (v) return v.trim();
+	}
+	return '';
+};
+const supabaseUrl = envValue('VITE_SUPABASE_URL', 'SUPABASE_URL');
+const supabasePublishableKey = envValue(
+	'VITE_SUPABASE_PUBLISHABLE_KEY',
+	'SUPABASE_PUBLISHABLE_KEY',
+	'VITE_SUPABASE_ANON_KEY',
+	'SUPABASE_ANON_KEY',
+);
+const looksSecret = (key) => {
+	if (!key) return false;
+	if (key.startsWith('sb_secret_')) return true;
+	try {
+		const payload = JSON.parse(Buffer.from(key.split('.')[1] || '', 'base64').toString('utf8'));
+		return payload?.role === 'service_role';
+	} catch {
+		return false;
+	}
+};
+if (looksSecret(supabasePublishableKey)) {
+	throw new Error(
+		'The Supabase key given to the website is the SECRET key. Use the publishable key (sb_publishable_...) ' +
+		'for the website; keep the secret key only in the API server environment.',
+	);
+}
+if (!isDev && !supabasePublishableKey) {
+	console.warn('\n⚠️  No Supabase publishable key found — set VITE_SUPABASE_PUBLISHABLE_KEY before building.\n');
+}
 
 // Only the Horizons editor may read this dev server cross-origin. `cors: true`
 // sends `Access-Control-Allow-Origin: *`, which lets any site read the source
@@ -392,6 +432,10 @@ logger.error = (msg, options) => {
 }
 
 export default defineConfig({
+	define: {
+		'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabaseUrl),
+		'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(supabasePublishableKey),
+	},
 	optimizeDeps: {
 		include: allDeps,
 	},
