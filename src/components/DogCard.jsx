@@ -14,6 +14,7 @@ export default function DogCard({ dog, adopters = 0 }) {
           alt={`${dog.name}, ${dog.sex || ''} Indie dog`}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          style={{ objectPosition: 'center 30%' }}
         />
         <DogTag name={dog.name} className="absolute bottom-4 left-0" />
       </div>

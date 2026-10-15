@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { Stethoscope, Soup, Home as HomeIcon, Ambulance, HeartHandshake, House, PackageOpen } from 'lucide-react';
 import { list, rpc, useAsync, useSettings } from '@/lib/data';
 import { IN_CARE } from '@/lib/constants';
-import { dogPhoto, onImgError, stock } from '@/lib/images';
+import { onImgError, stock } from '@/lib/images';
 import { inr, num } from '@/lib/format';
-import DogTag from '@/components/DogTag';
 import DogCard from '@/components/DogCard';
+import HeroCarousel from '@/components/HeroCarousel';
 import { LinkButton } from '@/components/ui';
 
 export default function Home() {
@@ -16,13 +16,15 @@ export default function Home() {
   const all = dogs || [];
   const featured = all.find((d) => d.id === settings.featured_dog_id) || all.find((d) => d.status === 'ready') || all[0];
   const others = all.filter((d) => d !== featured).slice(0, 4);
+  // Hero slides: Dog of the Week first, then dogs ready for a home, then the rest
+  const heroDogs = featured ? [featured, ...all.filter((d) => d !== featured).sort((a, b) => (b.status === 'ready') - (a.status === 'ready'))].slice(0, 8) : [];
   const inCare = stats?.in_care || all.length;
   const min = settings.min_monthly_amount || 5000;
 
   return (
     <>
       {/* Hero: one dog, by name */}
-      <section className="wrap grid items-center gap-10 pb-16 pt-10 md:grid-cols-[1.05fr_1fr] md:pt-16">
+      <section className="wrap grid grid-cols-1 items-center gap-10 pb-16 pt-10 md:grid-cols-[1.05fr_1fr] md:pt-16">
         <div>
           <h1 className="text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-[4.4rem]">
             {inCare > 0 ? `${inCare} dogs live at our shelter.` : 'Our shelter dogs.'} Every one of them has a name.
@@ -35,26 +37,11 @@ export default function Home() {
             <LinkButton to="/donate" size="lg" variant="outline">Give once</LinkButton>
           </div>
         </div>
-        <div className="relative">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-wall-2 sm:aspect-[5/6]">
-            <img
-              src={featured ? dogPhoto(featured, 1200) : stock(0, 1200)}
-              onError={onImgError}
-              alt={featured ? `${featured.name}, one of our shelter dogs` : 'An Indie dog at the shelter'}
-              className="h-full w-full object-cover"
-              fetchpriority="high"
-            />
-          </div>
-          {featured && (
-            <Link to={`/dogs/${featured.id}`} className="absolute -left-2 bottom-8 block sm:-left-6">
-              <DogTag name={featured.name} size="xl" className="shadow-xl" />
-              <span className="mt-2 block w-max max-w-[16rem] rounded-xl bg-white px-4 py-2.5 text-sm shadow-lg">
-                {featured.personality || featured.story?.slice(0, 80) || `Rescued from ${featured.rescued_from_area || 'the streets'}.`}
-                <span className="mt-1 block font-semibold underline">Meet {featured.name}</span>
-              </span>
-            </Link>
-          )}
-        </div>
+        {heroDogs.length > 0 ? (
+          <HeroCarousel dogs={heroDogs} />
+        ) : (
+          <img src={stock(0, 1200)} onError={onImgError} alt="An Indie dog at the shelter" className="aspect-[4/5] w-full rounded-[28px] object-cover sm:aspect-[5/6]" style={{ objectPosition: 'center 30%' }} />
+        )}
       </section>
 
       {/* Impact, said as a sentence */}
