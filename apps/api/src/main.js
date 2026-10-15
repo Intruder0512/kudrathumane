@@ -43,7 +43,9 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/', routes());
+const apiRoutes = routes();
+app.use('/api', apiRoutes);
+app.use('/', apiRoutes);
 
 app.use(errorMiddleware);
 

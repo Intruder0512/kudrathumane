@@ -1,84 +1,85 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import pb from '@/lib/pocketbaseClient.js';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
 const AuthContext = createContext(null);
+
+// Combine the Supabase auth user with their row in public.profiles (name, phone, role…)
+const loadProfile = async (user) => {
+  if (!user) return null;
+  const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  return {
+    id: user.id,
+    email: user.email,
+    name: data?.name || user.user_metadata?.name || '',
+    phone: data?.phone || '',
+    address: data?.address || '',
+    role: data?.role || 'user',
+    ...data,
+  };
+};
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      console.log("AuthContext: Initializing auth check...");
-      if (pb.authStore.isValid) {
-        try {
-          console.log("AuthContext: Refreshing token...");
-          const authData = await pb.collection('users').authRefresh({ $autoCancel: false });
-          console.log("AuthContext: Token refreshed successfully.", authData.record);
-          setCurrentUser(authData.record);
-        } catch (err) {
-          console.error("AuthContext: Token refresh failed:", err);
-          pb.authStore.clear();
-          setCurrentUser(null);
-        }
-      } else {
-        console.log("AuthContext: No valid token found.");
-        setCurrentUser(null);
-      }
-      setInitialLoading(false);
-    };
-    
-    checkAuth();
+    let active = true;
 
-    const unsubscribe = pb.authStore.onChange((token, model) => {
-      console.log("AuthContext: Auth store changed.", { hasToken: !!token, modelEmail: model?.email, modelRole: model?.role });
-      setCurrentUser(model);
+    supabase.auth.getSession().then(async ({ data }) => {
+      const profile = await loadProfile(data?.session?.user);
+      if (active) {
+        setCurrentUser(profile);
+        setInitialLoading(false);
+      }
     });
 
-    return () => unsubscribe();
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Defer DB calls out of the auth callback (recommended by Supabase)
+      setTimeout(async () => {
+        const profile = await loadProfile(session?.user);
+        if (active) setCurrentUser(profile);
+      }, 0);
+    });
+
+    return () => {
+      active = false;
+      sub?.subscription?.unsubscribe();
+    };
   }, []);
 
-  const login = async (email, password) => {
-    console.log("AuthContext: login function called with email:", email);
-    const authData = await pb.collection('users').authWithPassword(email, password, { $autoCancel: false });
-    console.log("AuthContext: authWithPassword successful.", authData.record);
-    setCurrentUser(authData.record);
-    return authData.record;
-  };
+  const login = useCallback(async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    const profile = await loadProfile(data.user);
+    setCurrentUser(profile);
+    return profile;
+  }, []);
 
-  const signup = async (email, password, passwordConfirm, name, phone, address) => {
-    console.log("AuthContext: signup function called.");
-    const record = await pb.collection('users').create({
+  const signup = useCallback(async (email, password, passwordConfirm, name, phone, address) => {
+    if (passwordConfirm !== undefined && password !== passwordConfirm) {
+      throw new Error('Passwords do not match');
+    }
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      passwordConfirm,
-      name,
-      phone,
-      address,
-      role: 'user'
-    }, { $autoCancel: false });
-    
-    await pb.collection('users').authWithPassword(email, password, { $autoCancel: false });
-    setCurrentUser(pb.authStore.model);
-    return record;
-  };
+      options: { data: { name, phone, address } },
+    });
+    if (error) throw error;
+    if (!data.session) {
+      throw new Error('Account created! Please check your email to confirm it, then log in.');
+    }
+    const profile = await loadProfile(data.user);
+    setCurrentUser(profile);
+    return profile;
+  }, []);
 
-  const logout = () => {
-    console.log("AuthContext: logout function called.");
-    pb.authStore.clear();
+  const logout = useCallback(async () => {
+    await supabase.auth.signOut();
     setCurrentUser(null);
-  };
+  }, []);
 
   const isAdmin = currentUser?.role === 'admin';
   const isAuthenticated = !!currentUser;
-
-  console.log("AuthContext: Current State ->", { 
-    email: currentUser?.email, 
-    role: currentUser?.role,
-    isAdmin, 
-    isAuthenticated, 
-    initialLoading 
-  });
 
   return (
     <AuthContext.Provider value={{ currentUser, login, signup, logout, isAdmin, isAuthenticated, initialLoading }}>

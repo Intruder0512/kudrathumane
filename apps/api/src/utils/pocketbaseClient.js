@@ -1,84 +1,43 @@
-import Pocketbase from 'pocketbase';
+// Server-side database client (Supabase). Kept under the old name so routes work unchanged.
+// Uses the SECRET key, which bypasses row-level security — only ever load it from .env on the server.
+import { createClient } from '@supabase/supabase-js';
+import { createPbAdapter } from './supabaseAdapter.js';
+import { TABLES } from './dbSchema.js';
 import logger from './logger.js';
 
-const POCKETBASE_HOST = `http://localhost:8090`;
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_API_KEY;
 
-async function waitForHealth({ retries = 10, delayMs = 1000 } = {}) {
-    for (let i = 1; i <= retries; i++) {
-        try {
-            const response = await fetch(`${POCKETBASE_HOST}/api/health`, { method: 'HEAD' });
-
-            if (response.ok) {
-                return;
-            }
-        } catch {
-            // PocketBase not reachable yet; retry below
-        }
-
-        logger.warn(`PocketBase not ready, retrying (${i}/${retries})...`);
-
-        await new Promise((r) => setTimeout(r, delayMs));
-    }
-
-    throw new Error(`PocketBase health check failed after ${retries} retries`);
+if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
+  logger.error('SUPABASE_URL and SUPABASE_SECRET_KEY must be set in apps/api/.env');
 }
 
-const pocketbaseClient = new Pocketbase(POCKETBASE_HOST);
+export const supabaseAdmin = createClient(SUPABASE_URL || 'http://localhost', SUPABASE_SECRET_KEY || 'missing', {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
 
-pocketbaseClient.autoCancellation(false);
+const pocketbaseClient = createPbAdapter(supabaseAdmin, { tables: TABLES, bucket: 'uploads' });
 
-let authPromise = null;
-
-pocketbaseClient.beforeSend = async function (url, options) {
-    if (url.includes('/api/collections/_superusers/auth-with-password')) {
-        return { url, options };
-    }
-
-    if (!pocketbaseClient.authStore.isValid && !authPromise) {
-        authPromise = pocketbaseClient.collection('_superusers').authWithPassword(
-            process.env.PB_SUPERUSER_EMAIL,
-            process.env.PB_SUPERUSER_PASSWORD,
-        ).finally(() => {
-            authPromise = null;
-        });
-    }
-
-    if (authPromise) {
-        await authPromise;
-    }
-
-    if (pocketbaseClient.authStore.isValid && pocketbaseClient.authStore.token) {
-        options.headers = options.headers || {};
-        options.headers['Authorization'] = pocketbaseClient.authStore.token;
-    }
-
-    return { url, options };
+// Email: uses Resend (https://resend.com) when RESEND_API_KEY is set; otherwise logs and skips.
+pocketbaseClient.sendEmail = async ({ to, subject, html }) => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    logger.warn(`Email not sent (RESEND_API_KEY not set): "${subject}" → ${to}`);
+    return { skipped: true };
+  }
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      from: process.env.EMAIL_FROM || 'Kudrat Humane Living Trust <noreply@kudrathumane.org>',
+      to: Array.isArray(to) ? to : [to],
+      subject,
+      html,
+    }),
+  });
+  if (!res.ok) throw new Error(`Email failed: ${res.status} ${await res.text()}`);
+  return res.json();
 };
-
-(async () => {
-    try {
-        await waitForHealth();
-
-        if (!pocketbaseClient.authStore.isValid && !authPromise) {
-            authPromise = pocketbaseClient.collection('_superusers').authWithPassword(
-                process.env.PB_SUPERUSER_EMAIL,
-                process.env.PB_SUPERUSER_PASSWORD,
-            ).finally(() => {
-                authPromise = null;
-            });
-        }
-        
-        if (authPromise) {
-            await authPromise;
-        }
-        
-        logger.info('PocketBase client initialized successfully');
-    } catch (err) {
-        logger.error('Failed to initialize PocketBase client:', err);
-
-        process.exit(1);
-    }
-})();
 
 export default pocketbaseClient;
 export { pocketbaseClient };

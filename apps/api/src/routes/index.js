@@ -5,16 +5,17 @@ import fosterFamiliesRouter from './foster-families.js';
 import lostFoundRouter from './lost-found.js';
 import certificatesRouter from './certificates.js';
 import socialMediaRouter from './social-media.js';
+import { requireUser, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
 export default () => {
     router.get('/health', healthCheck);
-    router.use('/stripe', stripeRouter);
-    router.use('/foster-families', fosterFamiliesRouter);
-    router.use('/lost-found', lostFoundRouter);
-    router.use('/certificates', certificatesRouter);
-    router.use('/social-media', socialMediaRouter);
+    router.use('/stripe', requireUser, stripeRouter);
+    router.use('/foster-families', requireAdmin, fosterFamiliesRouter);
+    router.use('/lost-found', requireAdmin, lostFoundRouter);
+    router.use('/certificates', requireAdmin, certificatesRouter);
+    router.use('/social-media', requireAdmin, socialMediaRouter);
 
     return router;
 };

@@ -5,7 +5,6 @@ import inlineEditPlugin from './plugins/visual-editor/vite-plugin-react-inline-e
 import editModeDevPlugin from './plugins/visual-editor/vite-plugin-edit-mode.js';
 import iframeRouteRestorationPlugin from './plugins/vite-plugin-iframe-route-restoration.js';
 import sitePagesPlugin from './plugins/vite-plugin-site-pages.js';
-import pocketbaseAuthPlugin from './plugins/vite-plugin-pocketbase-auth.js';
 import sessionJournalPlugin from './plugins/session-journal/vite-plugin-session-journal.js';
 
 import { existsSync, readFileSync } from 'node:fs';
@@ -398,13 +397,16 @@ export default defineConfig({
 	},
 	customLogger: logger,
 	plugins: [
-		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin(), sitePagesPlugin(), pocketbaseAuthPlugin(), sessionJournalPlugin()] : []),
+		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin(), sitePagesPlugin(), sessionJournalPlugin()] : []),
 		react(),
 		addTransformIndexHtml,
 		domainCheckoutDevPlugin,
 	],
 	server: {
 		port: 3000,
+		proxy: {
+			'/api': 'http://localhost:3001',
+		},
 		cors: { origin: AllowedEditorOrigins },
 		headers: {
 			'Cross-Origin-Embedder-Policy': 'credentialless',
