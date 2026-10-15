@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Indie dog">
+  <rect width="400" height="300" fill="#f3e6d3"/>
+  <g fill="#b9773f">
+    <ellipse cx="200" cy="200" rx="95" ry="60"/>
+    <circle cx="200" cy="125" r="52"/>
+    <path d="M158 92 L140 40 L178 78 Z"/>
+    <path d="M242 92 L260 40 L222 78 Z"/>
+  </g>
+  <ellipse cx="200" cy="145" rx="26" ry="18" fill="#f7efe3"/>
+  <circle cx="182" cy="118" r="6" fill="#2b1d12"/>
+  <circle cx="218" cy="118" r="6" fill="#2b1d12"/>
+  <ellipse cx="200" cy="140" rx="9" ry="6" fill="#2b1d12"/>
+  <text x="200" y="285" font-family="sans-serif" font-size="16" text-anchor="middle" fill="#7a4e28">Kudrat Humane Living Trust</text>
+</svg>
