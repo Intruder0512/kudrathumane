@@ -6,6 +6,7 @@ import { dogPhoto, onImgError } from '@/lib/images';
 import { ageLabel, fmtDate, inr, daysUntil } from '@/lib/format';
 import { RESCUE_TYPE, SPAY, label } from '@/lib/constants';
 import DogTag from '@/components/DogTag';
+import FramedPhoto from '@/components/FramedPhoto';
 import { DogStatus } from '@/components/StatusBadge';
 import { LinkButton, Spinner, Empty, cx } from '@/components/ui';
 
@@ -35,8 +36,8 @@ export default function DogProfile() {
       <Link to="/dogs" className="text-sm font-semibold text-ink-400 hover:text-ink">← All dogs</Link>
       <div className="mt-4 grid gap-10 lg:grid-cols-[1.1fr_1fr]">
         <div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-wall-2">
-            <img src={photos[photo]} onError={onImgError} alt={`${dog.name}`} className="h-full w-full object-cover" />
+          <div className="relative aspect-4/3 overflow-hidden rounded-[28px] bg-wall-2">
+            <FramedPhoto src={photos[photo]} alt={dog.name} eager />
           </div>
           {photos.length > 1 && (
             <div className="mt-3 flex gap-2 overflow-x-auto">

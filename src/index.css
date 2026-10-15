@@ -1,7 +1,104 @@
-@import 'leaflet/dist/leaflet.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'leaflet/dist/leaflet.css' layer(base);
+@import 'tailwindcss';
+
+@theme {
+  --color-ink-50: #eef0f7;
+  --color-ink-100: #d9ddec;
+  --color-ink-200: #b3bad7;
+  --color-ink-300: #7f8ab8;
+  --color-ink-400: #55619a;
+  --color-ink-500: #34417a;
+  --color-ink-600: #1e2a5a;
+  --color-ink-700: #18224a;
+  --color-ink-800: #121a39;
+  --color-ink-900: #0c1228;
+  --color-ink: #1e2a5a;
+
+  --color-marigold-50: #fef6e8;
+  --color-marigold-100: #fceacc;
+  --color-marigold-200: #f9d598;
+  --color-marigold-300: #f6c064;
+  --color-marigold-400: #f2a93b;
+  --color-marigold-500: #dd8f1c;
+  --color-marigold-600: #b27014;
+  --color-marigold-700: #86530f;
+  --color-marigold: #f2a93b;
+
+  --color-wall-2: #e6eae0;
+  --color-wall-3: #d5dbcd;
+  --color-wall: #f2f4ee;
+
+  --color-neem-50: #e8f2ec;
+  --color-neem-100: #cbe2d5;
+  --color-neem-500: #2e6a4e;
+  --color-neem-600: #245540;
+  --color-neem: #2e6a4e;
+
+  --color-sindoor-50: #fbeae8;
+  --color-sindoor-100: #f5cbc6;
+  --color-sindoor-500: #c23a2e;
+  --color-sindoor: #c23a2e;
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-sans: Figtree, system-ui, sans-serif;
+
+  --container-prose: 68ch;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility wrap {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+
+@utility input {
+  @apply block w-full rounded-lg border border-wall-3 bg-white px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-300
+      focus:border-ink focus:outline-hidden focus:ring-2 focus:ring-marigold/60 disabled:bg-wall-2;
+}
+
+@utility label {
+  @apply mb-1.5 block text-sm font-semibold text-ink;
+}
+
+@utility hint {
+  @apply mt-1 text-[13px] text-ink-400;
+}
+
+@utility table-wrap {
+  @apply overflow-x-auto rounded-xl border border-wall-3 bg-white;
+}
+
+@utility table {
+  @apply w-full text-left text-sm;
+  & th {
+    @apply whitespace-nowrap border-b border-wall-3 bg-wall px-3 py-2.5 font-semibold text-ink-500;
+  }
+  & td {
+    @apply border-b border-wall-2 px-3 py-2.5 align-top;
+  }
+  & tr:last-child td {
+    @apply border-b-0;
+  }
+  & tbody tr:hover {
+    @apply bg-marigold-50/50;
+  }
+}
 
 @layer base {
   html { -webkit-text-size-adjust: 100%; }
@@ -13,21 +110,6 @@
 }
 
 @layer components {
-  .wrap { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
-  .input {
-    @apply block w-full rounded-lg border border-wall-3 bg-white px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-300
-      focus:border-ink focus:outline-none focus:ring-2 focus:ring-marigold/60 disabled:bg-wall-2;
-  }
-  .label { @apply mb-1.5 block text-sm font-semibold text-ink; }
-  .hint { @apply mt-1 text-[13px] text-ink-400; }
-  .table-wrap { @apply overflow-x-auto rounded-xl border border-wall-3 bg-white; }
-  .table { @apply w-full text-left text-sm; }
-  .table th { @apply whitespace-nowrap border-b border-wall-3 bg-wall px-3 py-2.5 font-semibold text-ink-500; }
-  .table td { @apply border-b border-wall-2 px-3 py-2.5 align-top; }
-  .table tr:last-child td { @apply border-b-0; }
-  .table tbody tr:hover { @apply bg-marigold-50/50; }
-}
-
 /* The collar tag: the site's signature for a dog's name */
 .tag {
   display: inline-flex;
@@ -50,6 +132,7 @@
   background: #F2F4EE;
   box-shadow: inset 0 0 0 2px #1E2A5A;
   flex: none;
+}
 }
 
 @media (prefers-reduced-motion: reduce) {

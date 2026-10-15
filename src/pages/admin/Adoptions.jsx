@@ -48,7 +48,7 @@ export default function Adoptions() {
               return <Badge tone={!p ? 'red' : p.status === 'completed' ? 'green' : p.status === 'failed' ? 'red' : 'amber'}>{!p ? 'Not paid yet' : p.status === 'completed' ? 'Paid' : p.status === 'failed' ? 'Failed' : 'To confirm'}</Badge>;
             },
           },
-          { label: 'Status', text: (r) => r.status, render: (r) => <span><Badge tone={r.status === 'active' ? 'green' : r.status === 'pending' ? 'amber' : 'grey'}>{label(ADOPTION_STATUS, r.status)}</Badge>{r.cancel_reason && <span className="mt-1 block max-w-[12rem] text-xs text-ink-400">{r.cancel_reason}</span>}</span> },
+          { label: 'Status', text: (r) => r.status, render: (r) => <span><Badge tone={r.status === 'active' ? 'green' : r.status === 'pending' ? 'amber' : 'grey'}>{label(ADOPTION_STATUS, r.status)}</Badge>{r.cancel_reason && <span className="mt-1 block max-w-48 text-xs text-ink-400">{r.cancel_reason}</span>}</span> },
         ]}
         search={['supporter_name', 'supporter_email', 'supporter_phone', (r) => r.dogs?.name]}
         filters={[{ name: 'status', label: 'Statuses', options: ADOPTION_STATUS }]}

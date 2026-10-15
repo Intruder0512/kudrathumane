@@ -41,8 +41,8 @@ export default function SiteLayout() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
-      <header className="sticky top-0 z-40 border-b border-wall-3/70 bg-wall/90 backdrop-blur">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
+      <header className="sticky top-0 z-40 border-b border-wall-3/70 bg-wall/90 backdrop-blur-sm">
         <div className="wrap flex h-16 items-center justify-between gap-4">
           <Logo />
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">

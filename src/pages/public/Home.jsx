@@ -29,7 +29,7 @@ export default function Home() {
           <h1 className="text-[2.6rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-[4.4rem]">
             {inCare > 0 ? `${inCare} dogs live at our shelter.` : 'Our shelter dogs.'} Every one of them has a name.
           </h1>
-          <p className="mt-6 max-w-[34rem] text-lg text-ink-500">
+          <p className="mt-6 max-w-136 text-lg text-ink-500">
             Kudrat Humane Living Trust rescues Indie street dogs that are hit by vehicles, beaten, or left behind — then treats them, feeds them and keeps them safe until someone is ready to love them.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -40,7 +40,7 @@ export default function Home() {
         {heroDogs.length > 0 ? (
           <HeroCarousel dogs={heroDogs} />
         ) : (
-          <img src={stock(0, 1200)} onError={onImgError} alt="An Indie dog at the shelter" className="aspect-[4/5] w-full rounded-[28px] object-cover sm:aspect-[5/6]" style={{ objectPosition: 'center 30%' }} />
+          <img src={stock(0, 1200)} onError={onImgError} alt="An Indie dog at the shelter" className="aspect-4/5 w-full rounded-[28px] object-cover sm:aspect-5/6" style={{ objectPosition: 'center 30%' }} />
         )}
       </section>
 
@@ -100,7 +100,7 @@ export default function Home() {
 
       {/* Founder */}
       <section className="wrap grid items-center gap-10 pt-24 md:grid-cols-[0.9fr_1.1fr]">
-        <img src={stock(4, 900)} onError={onImgError} alt="An Indie dog resting at the shelter" className="aspect-[4/3] w-full rounded-[28px] object-cover" loading="lazy" />
+        <img src={stock(4, 900)} onError={onImgError} alt="An Indie dog resting at the shelter" className="aspect-4/3 w-full rounded-[28px] object-cover" loading="lazy" />
         <div>
           <h2 className="text-4xl font-extrabold">Started by {settings.founder_name || 'Pooja Prasad'}</h2>
           <div className="mt-5 max-w-prose space-y-4 text-lg text-ink-500">

@@ -278,7 +278,7 @@ function Placement({ p }) {
           <ol className="mt-4 space-y-4 border-l-2 border-wall-3 pl-5">
             {updates.map((u) => (
               <li key={u.id} className="relative">
-                <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-marigold ring-4 ring-wall" />
+                <span className="absolute left-[-27px] top-1.5 h-3 w-3 rounded-full bg-marigold ring-4 ring-wall" />
                 <p className="text-sm font-semibold">{fmtDate(u.update_date)} · {label(MOOD, u.mood)}{u.weight_kg ? ` · ${u.weight_kg} kg` : ''}</p>
                 {u.eating && <p className="text-sm text-ink-500">Eating: {u.eating}</p>}
                 {u.health_notes && <p className="text-sm text-ink-500">{u.health_notes}</p>}

@@ -98,7 +98,7 @@ export default function AdminLayout() {
       </aside>
       {open && <div className="fixed inset-0 z-40 bg-ink-900/50 lg:hidden" onClick={() => setOpen(false)} />}
       <div className="min-w-0">
-        <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-wall-3 bg-wall/95 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-wall-3 bg-wall/95 px-4 py-3 backdrop-blur-sm lg:hidden">
           <button onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
           <span className="font-display font-bold">Kudrat admin</span>
         </div>

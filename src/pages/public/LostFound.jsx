@@ -38,7 +38,7 @@ export default function LostFound() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((r) => (
               <article key={r.id} className="overflow-hidden rounded-2xl bg-white ring-1 ring-wall-3">
-                <img src={r.photo_url || PLACEHOLDER} onError={onImgError} alt={r.dog_description} className="aspect-[4/3] w-full object-cover" loading="lazy" />
+                <img src={r.photo_url || PLACEHOLDER} onError={onImgError} alt={r.dog_description} className="aspect-4/3 w-full object-cover" loading="lazy" />
                 <div className="p-5">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge tone={r.kind === 'lost' ? 'red' : 'green'}>{r.kind === 'lost' ? 'Lost' : 'Found'} {fmtDate(r.seen_on)}</Badge>

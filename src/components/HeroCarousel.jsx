@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { dogPhoto, onImgError } from '@/lib/images';
 import { ageLabel } from '@/lib/format';
 import DogTag from './DogTag';
+import FramedPhoto from './FramedPhoto';
 import { cx } from './ui';
 
 const INTERVAL = 6000;
@@ -51,7 +52,7 @@ export default function HeroCarousel({ dogs }) {
       aria-label="Dogs at our shelter"
     >
       <div
-        className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-ink shadow-[0_30px_60px_-30px_rgba(30,42,90,0.55)] sm:aspect-[5/6]"
+        className="relative aspect-4/5 overflow-hidden rounded-[28px] bg-ink shadow-[0_30px_60px_-30px_rgba(30,42,90,0.55)] sm:aspect-5/6"
         onTouchStart={(e) => (touch.current = e.touches[0].clientX)}
         onTouchEnd={(e) => {
           if (touch.current === null) return;
@@ -69,20 +70,17 @@ export default function HeroCarousel({ dogs }) {
             aria-label={`${k + 1} of ${n}: ${d.name}`}
             aria-hidden={k !== i}
           >
-            <img
+            <FramedPhoto
               src={dogPhoto(d, 1400)}
-              onError={onImgError}
               alt={`${d.name}, ${d.sex === 'female' ? 'a female' : d.sex === 'male' ? 'a male' : 'an'} Indie dog at our shelter`}
-              className={cx('h-full w-full object-cover', k === i && !reduced && 'animate-[heroZoom_9s_ease-out_forwards]')}
-              style={{ objectPosition: 'center 30%' }}
-              loading={k === 0 ? 'eager' : 'lazy'}
-              fetchpriority={k === 0 ? 'high' : 'auto'}
+              imgClassName={cx('object-top origin-top', k === i && !reduced && 'animate-[heroZoom_9s_ease-out_forwards]')}
+              eager={k === 0}
             />
           </div>
         ))}
 
         {/* shading so the text stays readable on any photo */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/90 via-ink-900/25 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-ink-900/90 via-ink-900/25 to-transparent" />
 
         {/* caption */}
         <div className="absolute inset-x-0 bottom-0 p-5 sm:p-7" aria-live="polite">
@@ -106,13 +104,13 @@ export default function HeroCarousel({ dogs }) {
 
         {n > 1 && (
           <div className="absolute right-3 top-3 flex gap-1.5 sm:right-4 sm:top-4">
-            <button onClick={() => setUserPaused((p) => !p)} className="rounded-full bg-ink-900/55 p-2 text-white backdrop-blur hover:bg-ink-900/80" aria-label={userPaused ? 'Play slideshow' : 'Pause slideshow'}>
+            <button onClick={() => setUserPaused((p) => !p)} className="rounded-full bg-ink-900/55 p-2 text-white backdrop-blur-sm hover:bg-ink-900/80" aria-label={userPaused ? 'Play slideshow' : 'Pause slideshow'}>
               {userPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
             </button>
-            <button onClick={() => go(i - 1)} className="rounded-full bg-ink-900/55 p-2 text-white backdrop-blur hover:bg-ink-900/80" aria-label="Previous dog">
+            <button onClick={() => go(i - 1)} className="rounded-full bg-ink-900/55 p-2 text-white backdrop-blur-sm hover:bg-ink-900/80" aria-label="Previous dog">
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button onClick={() => go(i + 1)} className="rounded-full bg-ink-900/55 p-2 text-white backdrop-blur hover:bg-ink-900/80" aria-label="Next dog">
+            <button onClick={() => go(i + 1)} className="rounded-full bg-ink-900/55 p-2 text-white backdrop-blur-sm hover:bg-ink-900/80" aria-label="Next dog">
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>

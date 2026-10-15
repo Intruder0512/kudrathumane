@@ -128,7 +128,7 @@ export default function Adopt() {
             ))}
             <label className="flex items-center gap-2 rounded-xl bg-white px-3 ring-2 ring-wall-3">
               <span className="text-sm font-semibold text-ink-400">Other ₹</span>
-              <input type="number" min={min} step="100" value={custom} onChange={(e) => setCustom(e.target.value)} className="w-28 py-3 font-display text-lg font-bold outline-none" placeholder={String(min)} aria-label="Custom monthly amount" />
+              <input type="number" min={min} step="100" value={custom} onChange={(e) => setCustom(e.target.value)} className="w-28 py-3 font-display text-lg font-bold outline-hidden" placeholder={String(min)} aria-label="Custom monthly amount" />
             </label>
           </div>
           <p className="hint">Minimum {inr(min)} a month. You can stop any time from your account.</p>

@@ -66,7 +66,7 @@ export default function Donate() {
             ))}
             <label className="flex items-center gap-2 rounded-xl bg-white px-3 ring-2 ring-wall-3">
               <span className="text-sm font-semibold text-ink-400">₹</span>
-              <input type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-24 py-2.5 font-display text-lg font-bold outline-none" aria-label="Amount" />
+              <input type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-24 py-2.5 font-display text-lg font-bold outline-hidden" aria-label="Amount" />
             </label>
           </div>
           <div className="mt-5"><UpiPay amount={amount} note="Donation to Kudrat Humane" /></div>

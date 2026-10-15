@@ -168,7 +168,7 @@ function History({ dogId }) {
     <ol className="max-w-xl space-y-3 border-l-2 border-wall-3 pl-5">
       {data.map((h) => (
         <li key={h.id} className="relative">
-          <span className="absolute -left-[27px] top-1.5 h-3 w-3 rounded-full bg-marigold ring-4 ring-wall" />
+          <span className="absolute left-[-27px] top-1.5 h-3 w-3 rounded-full bg-marigold ring-4 ring-wall" />
           <p className="font-semibold">{h.from_status ? `${label(DOG_STATUS, h.from_status)} → ` : ''}{label(DOG_STATUS, h.to_status)}</p>
           <p className="text-sm text-ink-400">{fmtDate(h.changed_at, { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
         </li>

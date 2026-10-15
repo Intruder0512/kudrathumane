@@ -46,7 +46,7 @@ export default function Foster() {
             Some dogs heal faster away from kennel noise. Fostering means giving one of them a quiet corner of your home while they recover or wait for a family. We pay for food and vet care.
           </p>
         </div>
-        <img src={stock(3, 900)} onError={onImgError} alt="An Indie dog relaxing at home" className="aspect-[4/3] w-full rounded-[28px] object-cover" />
+        <img src={stock(3, 900)} onError={onImgError} alt="An Indie dog relaxing at home" className="aspect-4/3 w-full rounded-[28px] object-cover" />
       </div>
 
       <section className="mt-16 grid gap-12 lg:grid-cols-2">

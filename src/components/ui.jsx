@@ -67,7 +67,7 @@ export function Select({ options = [], placeholder, className, ...props }) {
 export function Checkbox({ label, hint, className, ...props }) {
   return (
     <label className={cx('flex cursor-pointer items-start gap-3', className)}>
-      <input type="checkbox" className="mt-1 h-5 w-5 flex-none rounded border-wall-3 accent-ink" {...props} />
+      <input type="checkbox" className="mt-1 h-5 w-5 flex-none rounded-sm border-wall-3 accent-ink" {...props} />
       <span>
         <span className="font-medium">{label}</span>
         {hint && <span className="hint block">{hint}</span>}
@@ -209,7 +209,7 @@ export function ToastProvider({ children }) {
   return (
     <ToastCtx.Provider value={push}>
       {children}
-      <div className="pointer-events-none fixed bottom-4 left-1/2 z-[60] flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 flex-col gap-2" aria-live="polite">
+      <div className="pointer-events-none fixed bottom-4 left-1/2 z-60 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 flex-col gap-2" aria-live="polite">
         {items.map((t) => {
           const Icon = icons[t.tone] || Info;
           return (

@@ -7,7 +7,7 @@ import { ageLabel } from '@/lib/format';
 export default function DogCard({ dog, adopters = 0 }) {
   return (
     <Link to={`/dogs/${dog.id}`} className="group block focus-visible:outline-offset-4">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-wall-2">
+      <div className="relative aspect-4/5 overflow-hidden rounded-[22px] bg-wall-2">
         <img
           src={dogPhoto(dog, 700)}
           onError={onImgError}
