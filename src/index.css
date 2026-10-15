@@ -1,0 +1,59 @@
+@import 'leaflet/dist/leaflet.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-wall text-ink font-sans antialiased; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3, h4 { @apply font-display text-ink; line-height: 1.1; letter-spacing: -0.015em; }
+  :focus-visible { outline: 3px solid #F2A93B; outline-offset: 2px; border-radius: 6px; }
+  ::selection { background: #F9D598; }
+  img { max-width: 100%; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
+  .input {
+    @apply block w-full rounded-lg border border-wall-3 bg-white px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-300
+      focus:border-ink focus:outline-none focus:ring-2 focus:ring-marigold/60 disabled:bg-wall-2;
+  }
+  .label { @apply mb-1.5 block text-sm font-semibold text-ink; }
+  .hint { @apply mt-1 text-[13px] text-ink-400; }
+  .table-wrap { @apply overflow-x-auto rounded-xl border border-wall-3 bg-white; }
+  .table { @apply w-full text-left text-sm; }
+  .table th { @apply whitespace-nowrap border-b border-wall-3 bg-wall px-3 py-2.5 font-semibold text-ink-500; }
+  .table td { @apply border-b border-wall-2 px-3 py-2.5 align-top; }
+  .table tr:last-child td { @apply border-b-0; }
+  .table tbody tr:hover { @apply bg-marigold-50/50; }
+}
+
+/* The collar tag: the site's signature for a dog's name */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1.1rem 0.35rem 0.85rem;
+  background: #F2A93B;
+  color: #1E2A5A;
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+  border-radius: 6px 0 0 6px;
+}
+.tag::before {
+  content: '';
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #F2F4EE;
+  box-shadow: inset 0 0 0 2px #1E2A5A;
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.leaflet-container { font-family: Figtree, system-ui, sans-serif; border-radius: 12px; }

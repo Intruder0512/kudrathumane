@@ -3,6 +3,5 @@ dist/
 .env
 .env.*
 !.env.example
-apps/pocketbase/pb_data/
 *.log
 .DS_Store
