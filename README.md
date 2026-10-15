@@ -47,9 +47,9 @@ database with row-level security.
 
 ## Deploy to Hostinger
 
-**Option A — automatic (recommended).** In GitHub: repo → Settings → Secrets and variables →
-Actions → *Variables* → add `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`. Every push to `main`
-builds the site into the `deploy` branch. In Hostinger hPanel → Websites → Git, connect this repo,
+**Option A — automatic (recommended).** Every push to `main` builds the site into the `deploy`
+branch (the project URL and publishable key are built in; override them with Actions variables
+`SUPABASE_URL` / `SUPABASE_PUBLISHABLE_KEY` if they ever change). In Hostinger hPanel → Websites → Git, connect this repo,
 branch **deploy**, install path `public_html` (empty the folder first).
 
 **Option B — manual.** `cp .env.example .env`, fill in the key, then:

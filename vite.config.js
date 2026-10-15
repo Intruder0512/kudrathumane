@@ -14,7 +14,10 @@ export default defineConfig(({ mode }) => {
     return '';
   };
   const url = pick('VITE_SUPABASE_URL', 'SUPABASE_URL');
-  const key = pick('VITE_SUPABASE_PUBLISHABLE_KEY', 'SUPABASE_PUBLISHABLE_KEY', 'VITE_SUPABASE_ANON_KEY', 'SUPABASE_ANON_KEY');
+  // The publishable key is public by design (it ships in the browser); access is controlled by row-level security.
+  const key =
+    pick('VITE_SUPABASE_PUBLISHABLE_KEY', 'SUPABASE_PUBLISHABLE_KEY', 'VITE_SUPABASE_ANON_KEY', 'SUPABASE_ANON_KEY') ||
+    'sb_publishable_ShXGxPW2nPbHj_gW9iUcAA_PCcQLC_0';
 
   const looksSecret = (k) => {
     if (!k) return false;
